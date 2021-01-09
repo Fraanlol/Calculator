@@ -1,0 +1,107 @@
+*{
+    font-family: "Victor mono";
+    font-size: 10px;
+    user-select: none
+}
+
+body{
+    background-color:rgb(211, 211, 211);
+}
+
+header{
+    text-align: center;
+}
+
+.mainTitle{
+    font-size: 2rem;
+}
+
+main{
+    text-align: center;
+}
+
+.calculatorContainer{
+    display:grid;
+    grid-template-rows: auto 64px auto;
+    width: 400px;
+    height: 600px;
+    margin:auto;
+    padding: 1rem;
+    box-sizing: border-box;
+    border-radius: .5rem;
+    background-color: black;
+    color:white;
+}
+
+.numberAndResult{
+    display:flex;
+    flex-flow: column;
+    justify-content: space-between;
+    text-align: end;
+    padding-right: 20px;
+}
+
+.result{
+    color:hsl(0, 0%, 70%);
+    font-size: 2rem;
+}
+
+.current{
+    font-size: 3rem;
+}
+.numberContainer{
+ width: 100%;
+}
+.topBar{
+    width: 100%;
+    height:fit-content;
+    display:flex;
+    justify-content: flex-end;
+    align-self: flex-end;
+}
+
+.clear{
+    color: rgb(255, 60, 0);
+}
+.topBar > span {
+   color:green;
+   margin:20px;
+}
+
+
+.calculatorContainer > .buttons > button{
+    outline:none;
+    width:22%;
+    font-size: 3rem;
+    background-color: hsl(0, 0%, 9%);
+    border: 1px solid hsl(0, 0%, 20%);
+    box-sizing: border-box;
+    border-radius: 50%;
+    margin:5px;
+}
+
+.buttons{
+    padding:10px;
+    display:flex;
+    flex-flow: row wrap;
+    border-top: 1px solid grey;
+    justify-content: center;
+    margin: 0 5px;
+}
+
+.blank{
+    visibility: hidden;
+}
+.operator{
+    color:rgb(10, 209, 10);
+}
+
+.number{
+    color:white;
+}
+
+.equal{
+    color:white;
+    background-color: hsla(108, 100%, 35%, 0.925) !important;
+    
+}
