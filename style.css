@@ -105,3 +105,10 @@ main{
     background-color: hsla(108, 100%, 35%, 0.925) !important;
     
 }
+
+.errorContainer{
+    height:11px;
+    color:red;
+    font-family:Arial;
+    font-size: 1.5rem; 
+}
