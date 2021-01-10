@@ -5,13 +5,8 @@ function start(){
         }) 
     })
     document.querySelectorAll('.operator').forEach((key) => {
-        key.addEventListener('click', () => {
-            key.classList.contains('percentage') ? pushActual('%'):false;
-            key.classList.contains('divide') ? pushActual('/'):false;
-            key.classList.contains('multiply') ? pushActual('*'):false;
-            key.classList.contains('subtract') ? pushActual('-'):false;
-            key.classList.contains('add') ? pushActual('+'):false;
-            key.classList.contains('equal') ? evaluation():false;
+        key.addEventListener('click', (e) => {
+            key.classList.contains('equal') ? test() : pushActual(e.target.innerText);
         }) 
     })
 }
@@ -20,19 +15,31 @@ let actual = [];
 let total = [];
 const actualDisplay = document.querySelector('.current');
 function pushActual(n){
-    if (typeof(n) === typeof(n) === true) {
-        actual.push(n);
-        actualDisplay.innerHTML = actual.join('');
+    if(actualDisplay.innerText.length === 21){
+        return console.log('maxNumberReached')
     } else {
-        if(actualDisplay.innerHTML === '0'){
-            console.log('error.')
-        } else{
+        if ( +n === +n ) {
+            errorText.innerHTML = '';
             actual.push(n);
-            topush = [];
+            document.querySelectorAll('.main').forEach((key) => key.removeAttribute('disabled'));
             actualDisplay.innerHTML = actual.join('');
-        }
-    } 
-}
+        } else{
+            if(actualDisplay.innerHTML === '0'){
+                errorText.innerHTML = 'You must introduce a number first';
+            } else{
+                if (n === '.'){
+                   actual.push(n);
+                    document.querySelector('.point').setAttribute('disabled','');
+                } else {
+                actual.push(n)
+                document.querySelectorAll('.main').forEach((key) => key.setAttribute('disabled',''));
+                document.querySelector('.point').removeAttribute('disabled');
+            }
+            actualDisplay.innerHTML = actual.join('');
+        } 
+    }
+}}
+const errorText = document.querySelector('.errorContainer');
 const spaceBack = document.querySelector('.backButton');
 spaceBack.addEventListener('click', spaceEraser);
 const clearButton = document.querySelector('.clear');
@@ -42,31 +49,40 @@ const totalResult = document.querySelector('.result');
 function spaceEraser(){
    actual.pop();
    actual.length === 0 ?  actualDisplay.innerHTML = 0 :  actualDisplay.innerHTML = actual.join('');
+   document.querySelectorAll('.main').forEach((key) => key.removeAttribute('disabled'));
+   document.querySelector('.point').removeAttribute('disabled');
 }
 function clearEraser(){
     actual = [];
     topush = [];
     actualDisplay.innerHTML = 0;
     totalResult.innerHTML = 0;
+    document.querySelector('.point').removeAttribute('disabled');
+    document.querySelectorAll('.main').forEach((key) => key.removeAttribute('disabled'));
 }
-
+function test(){
+    if (actual.join(' ').match(/[+\-/*]/g)){
+        return evaluation();
+    } else {
+        return totalResult.innerHTML = `${actual.join('') === '' ? '0' : actual.join('')}`
+    }
+}
 function evaluation(){
     paso1 = actual.join(' ').replaceAll(/(\s)\.(\s)/g , '.');
-    clearEraser()
+    clearEraser();
+    document.querySelector('.point').removeAttribute('disabled');
     while (paso1.match(/(\d)\s+(\d)/g) !== null){
         paso1 = paso1.replaceAll(/(\d)\s+(\d)/g ,'$1$2')
     }
    
-    valArr = paso1.split(/\s[+-/*]\s/),//split string on each operator (having a space either side allowing for a negative value)
-    valArr = valArr.toString().replaceAll(/(\s)(\d)/g,'$2').split(','); // Make sure that negative numbers work
-    
+    valArr = paso1.split(/\s[+-/*]\s/).toString().replaceAll(/(\s)(\d)/g,'$2').split(',');//split string on each operator (having a space either side allowing for a negative value)
     opArr = paso1.match(/\s[+-/*]\s/g);//return all operators from string
-
     
     for(var i=0,len=valArr.length;i<len;i++){
         //convert each value to a number instead of string
         valArr[i] = valArr[i] * 1;
     }
+    
     for(var i=0,len=opArr.length;i<len;i++){
         //cleanup whitespace from operators
         opArr[i] = opArr[i].trim();
@@ -90,8 +106,9 @@ function evaluation(){
         }
     }
    
-    return totalResult.innerHTML = `${currentTotal }`;
-    
+    currentTotal === Infinity ? errorText.innerHTML='Can\'t divide by 0' : totalResult.innerHTML = parseFloat(currentTotal);
+    actual = parseFloat(currentTotal).toString().split('');
+    return actualDisplay.innerHTML = actual.join('');
 }
 
 start();
