@@ -18,10 +18,11 @@ function start(){
     document.querySelector('.clear').addEventListener('click', clearEraser);
 }
 
-let actual = [];
+let actual = [0];
 let total = [];
 let pointPresent = false;
 const actualDisplay = document.querySelector('.current');
+actualDisplay.innerHTML = actual.join('');
 
 function pushActual(n){ //Function to push items to both the calculator Display and the calculator Array
     if(actualDisplay.innerText.length === 21){
@@ -29,10 +30,10 @@ function pushActual(n){ //Function to push items to both the calculator Display 
     } else {
         if ( +n === +n ) {
             errorText.innerHTML = '';
-            actual.push(n);
+            actual[0] === 0 ? actual[0] = n : actual.push(n);
             actualDisplay.innerHTML = actual.join('');
         } else{
-            if(actualDisplay.innerHTML === '0'){
+            if(actualDisplay.innerHTML === ''){
                 errorText.innerHTML = 'You must introduce a number first';
             } else{
                 if (n === '.'){
@@ -55,15 +56,20 @@ const errorText = document.querySelector('.errorContainer');
 const totalResult = document.querySelector('.result');
 
 function spaceEraser(){ //Function to erase 1 space on the calculator display
+   errorText.innerHTML = '';
    actual[actual.length - 1].match(/[+*\-/%]/g) ? pointPresent = true : false
    actual[actual.length - 1].match(/[\.]/g) ? pointPresent = false : false
+   actual.find(element => element.match(/[+*/\-%]/g)) ? actual = actual.splice(0,actual.findIndex(element => element.match(/[+*/\-%]/g))):false
    actual.pop();
-   actual.length === 0 ?  actualDisplay.innerHTML = 0 :  actualDisplay.innerHTML = actual.join('');
+   totalResult.innerHTML = '0';
+   actual.length === 0 ?  actual.push('0') :  false;
+   actualDisplay.innerHTML = actual.join('')
 }
 function clearEraser(){ //Function to reset calculator, it'd be more easy to do a location.reload, but that wouldn't be clean
-    actual = [];
+    errorText.innerHTML = '';
+    actual = [0];
     topush = [];
-    actualDisplay.innerHTML = 0;
+    actualDisplay.innerHTML = actual.join('');
     totalResult.innerHTML = 0;
     pointPresent = false;
 }
@@ -95,29 +101,37 @@ function evaluation(){
         switch(opArr[i]){
             case '+':
                 currentTotal = currentTotal + valArr[i+1];
+                lastitem = `${opArr[i]} ${valArr[i+1]}`
                 break;
             case '-':
                 currentTotal = currentTotal - valArr[i+1];
+                lastitem = `${opArr[i]} ${valArr[i+1]}`
                 break;
             case '*':
                 currentTotal = currentTotal * valArr[i+1];
+                lastitem = `${opArr[i]} ${valArr[i+1]}`
                 break;
             case '/':
                 currentTotal = currentTotal / valArr[i+1];
+                valArr[i+1] === 0 ? true:lastitem = `${opArr[i]} ${valArr[i+1]}`
                 break;
             case '%':
                 currentTotal = (currentTotal * valArr[i+1]) / 100;
+                lastitem = `${opArr[i]} ${valArr[i+1]}`
                 break;
-        };
+        }; 
     };
     
     if (currentTotal === Infinity) { 
         errorText.innerHTML='Can\'t divide by 0';
-        actual.push('0');
+        lastitem 
     } else {
         totalResult.innerHTML = parseFloat(currentTotal);
         actual = parseFloat(currentTotal).toString().split('');
     }
-    return actualDisplay.innerHTML = actual.join('');
+    actualDisplay.innerHTML = actual.join('');
+    actual.push(lastitem.split(' ')[0]);
+    actual.push(lastitem.split(' ')[1]);
+    return
 }
 start();
