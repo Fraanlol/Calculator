@@ -9,7 +9,7 @@ function start(){
             key.classList.contains('equal') ? isCalculable() : pushActual(e.target.innerText);
         });
     });
-    window.addEventListener('keydown', (e) => { // Adds keyboard functionality
+    window.addEventListener('keydown', (e) => { //Adds keyboard functionality
         e.key.match(/\b\d\b|[+*\-/%\.]/g) ? pushActual(e.key):false
         e.key.match(/(Enter)|[=]/g) ? isCalculable():false;
         e.key.match('Backspace') ? spaceEraser():false;
@@ -20,6 +20,7 @@ function start(){
 
 let actual = [];
 let total = [];
+let pointPresent = false;
 const actualDisplay = document.querySelector('.current');
 
 function pushActual(n){ //Function to push items to both the calculator Display and the calculator Array
@@ -29,16 +30,21 @@ function pushActual(n){ //Function to push items to both the calculator Display 
         if ( +n === +n ) {
             errorText.innerHTML = '';
             actual.push(n);
-            document.querySelectorAll('.main').forEach((key) => key.removeAttribute('disabled'));
             actualDisplay.innerHTML = actual.join('');
         } else{
             if(actualDisplay.innerHTML === '0'){
                 errorText.innerHTML = 'You must introduce a number first';
             } else{
                 if (n === '.'){
-                    actual[actual.length - 1].match(/[+*\-/%\.]/g) ? errorText.innerHTML = 'You need to put a number before a point' : actual.push(n);
+                    if (actual[actual.length - 1].match(/[+*\-/%\.]/g)){
+                        errorText.innerHTML = 'You need to put a number before a point' 
+                    } else {
+                        pointPresent ? true : actual.push(n)
+                        pointPresent = true;
+                    }
                 } else {
                 actual[actual.length - 1].match(/[+*\-/%\.]/g) ? actual[actual.length - 1] = n : actual.push(n);
+                pointPresent = false;
             }
             actualDisplay.innerHTML = actual.join('');
         } 
@@ -49,18 +55,17 @@ const errorText = document.querySelector('.errorContainer');
 const totalResult = document.querySelector('.result');
 
 function spaceEraser(){ //Function to erase 1 space on the calculator display
+   actual[actual.length - 1].match(/[+*\-/%]/g) ? pointPresent = true : false
+   actual[actual.length - 1].match(/[\.]/g) ? pointPresent = false : false
    actual.pop();
    actual.length === 0 ?  actualDisplay.innerHTML = 0 :  actualDisplay.innerHTML = actual.join('');
-   document.querySelectorAll('.main').forEach((key) => key.removeAttribute('disabled'));
-   document.querySelector('.point').removeAttribute('disabled');
 }
 function clearEraser(){ //Function to reset calculator, it'd be more easy to do a location.reload, but that wouldn't be clean
     actual = [];
     topush = [];
     actualDisplay.innerHTML = 0;
     totalResult.innerHTML = 0;
-    document.querySelector('.point').removeAttribute('disabled');
-    document.querySelectorAll('.main').forEach((key) => key.removeAttribute('disabled'));
+    pointPresent = false;
 }
 
 function isCalculable(){ // Function to check if the calculator display contains an operation or are just numbers
@@ -79,14 +84,12 @@ function isCalculable(){ // Function to check if the calculator display contains
 function evaluation(){
     calcArray = actual.join(' ').replaceAll(/(\s)\.(\s)/g , '.');
     clearEraser();
-    document.querySelector('.point').removeAttribute('disabled');
     while (calcArray.match(/(\d)\s+(\d)/g) !== null){
         calcArray = calcArray.replaceAll(/(\d)\s+(\d)/g ,'$1$2');
     }
     valArr = calcArray.split(/\s[+\-/*%]\s/).toString().replaceAll(/(\s)(\d)/g,'$2').split(',').map(i => Number(i)); //split string on each operator (having a space either side allowing for a negative value) and then transform string values to number values.
     opArr = calcArray.match(/\s[+\-/*%]\s/g).map(i => i.trim()); //return all operators from string, and then clear whitespace
     
-  
     var currentTotal = valArr[0];
     for(var i=0,len=opArr.length;i<len;i++){
         switch(opArr[i]){
