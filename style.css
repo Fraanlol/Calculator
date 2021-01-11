@@ -5,7 +5,7 @@
 }
 
 body{
-    background-color:rgb(211, 211, 211);
+    background-color:rgb(224, 100, 42);
 }
 
 header{
@@ -25,7 +25,7 @@ main{
     grid-template-rows: auto 64px auto;
     width: 400px;
     height: 600px;
-    margin:auto;
+    margin: auto;
     padding: 1rem;
     box-sizing: border-box;
     border-radius: .5rem;
@@ -66,18 +66,24 @@ main{
 .topBar > span {
    color:green;
    margin:20px;
+   cursor:pointer;
 }
 
 
-.calculatorContainer > .buttons > button{
+.buttons > button{
     outline:none;
     width:22%;
     font-size: 3rem;
     background-color: hsl(0, 0%, 9%);
-    border: 1px solid hsl(0, 0%, 20%);
+    border: 2px solid hsl(0, 0%, 20%);
     box-sizing: border-box;
     border-radius: 50%;
     margin:5px;
+    cursor: pointer;
+}
+
+.buttons > button:hover{
+    transform: scale(1.1,1.1)
 }
 
 .buttons{
