@@ -21,10 +21,15 @@ function start(){
 let actual = [0];
 let total = [];
 let pointPresent = false;
+let lastItemPresent = false;
 const actualDisplay = document.querySelector('.current');
 actualDisplay.innerHTML = actual.join('');
 
 function pushActual(n){ //Function to push items to both the calculator Display and the calculator Array
+    if (lastItemPresent){
+        actual = actual.splice(0,actual.findIndex(element => element.match(/[+*/\-%]/g)));
+        lastItemPresent = false;
+    }
     if(actualDisplay.innerText.length === 21){
         return errorText.innerHTML = 'Max number length (21) reached';
     } else {
@@ -59,8 +64,13 @@ function spaceEraser(){ //Function to erase 1 space on the calculator display
    errorText.innerHTML = '';
    actual[actual.length - 1].match(/[+*\-/%]/g) ? pointPresent = true : false
    actual[actual.length - 1].match(/[\.]/g) ? pointPresent = false : false
-   actual.find(element => element.match(/[+*/\-%]/g)) ? actual = actual.splice(0,actual.findIndex(element => element.match(/[+*/\-%]/g))):false
-   actual.pop();
+   if(lastItemPresent === true) {
+       actual = actual.splice(0,actual.findIndex(element => element.match(/[+*/\-%]/g)))
+       lastItemPresent = false;
+       actual.pop();
+   } else{
+        actual.pop();
+   }
    totalResult.innerHTML = '0';
    actual.length === 0 ?  actual.push('0') :  false;
    actualDisplay.innerHTML = actual.join('')
@@ -68,10 +78,10 @@ function spaceEraser(){ //Function to erase 1 space on the calculator display
 function clearEraser(){ //Function to reset calculator, it'd be more easy to do a location.reload, but that wouldn't be clean
     errorText.innerHTML = '';
     actual = [0];
-    topush = [];
     actualDisplay.innerHTML = actual.join('');
     totalResult.innerHTML = 0;
     pointPresent = false;
+    lastItemPresent = false;
 }
 
 function isCalculable(){ // Function to check if the calculator display contains an operation or are just numbers
@@ -124,7 +134,6 @@ function evaluation(){
     
     if (currentTotal === Infinity) { 
         errorText.innerHTML='Can\'t divide by 0';
-        lastitem 
     } else {
         totalResult.innerHTML = parseFloat(currentTotal);
         actual = parseFloat(currentTotal).toString().split('');
@@ -132,6 +141,7 @@ function evaluation(){
     actualDisplay.innerHTML = actual.join('');
     actual.push(lastitem.split(' ')[0]);
     actual.push(lastitem.split(' ')[1]);
+    lastItemPresent = true;
     return
 }
 start();
